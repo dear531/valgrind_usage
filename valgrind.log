@@ -196,5 +196,89 @@ v0.0.2-0
 我们可以看到写无效的行数。
 
 ==============================
-==============================
 
+"v0.0.2-1"
+LEAK memory -- 内存泄漏
+
+diff --git a/memory_init.c b/memory_init.c
+index a7150f4..2cef044 100644
+--- a/memory_init.c
++++ b/memory_init.c
+@@ -1,7 +1,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
+-#define VERSION	"v0.0.2-0"
++#define VERSION	"v0.0.2-1"
+ void printf_version(int argc, char *argv[])
+ {
+ 	int t;
+@@ -21,8 +21,6 @@ int main(int argc, char *argv[])
+ 	printf_version(argc, argv);
+ 	int *p;
+ 	p = malloc(sizeof(*p) * 2);
+-	p[2]  = 0;
+-	free(p);
+ 
+ 	return 0;
+ }
+
+
+$ valgrind ./a.out -v
+==8390== Memcheck, a memory error detector
+==8390== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
+==8390== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==8390== Command: ./a.out -v
+==8390== 
+v0.0.2-0
+==8390== 
+
+/* leak memory summary */
+可以看见在使用当中退出，申请了一次，却没有释放。
+==8390== HEAP SUMMARY:
+==8390==     in use at exit: 8 bytes in 1 blocks
+==8390==   total heap usage: 1 allocs, 0 frees, 8 bytes allocated
+==8390== 
+==8390== LEAK SUMMARY:
+==8390==    definitely lost: 8 bytes in 1 blocks
+==8390==    indirectly lost: 0 bytes in 0 blocks
+==8390==      possibly lost: 0 bytes in 0 blocks
+==8390==    still reachable: 0 bytes in 0 blocks
+==8390==         suppressed: 0 bytes in 0 blocks
+==8390== Rerun with --leak-check=full to see details of leaked memory
+==8390== 
+==8390== For counts of detected and suppressed errors, rerun with: -v
+==8390== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+我们使用--leak-check=full选项进一步查看内存泄漏的位置：
+
+$ valgrind --leak-check=full ./a.out -v
+==8454== Memcheck, a memory error detector
+==8454== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
+==8454== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==8454== Command: ./a.out -v
+==8454== 
+v0.0.2-0
+==8454== 
+==8454== HEAP SUMMARY:
+==8454==     in use at exit: 8 bytes in 1 blocks
+==8454==   total heap usage: 1 allocs, 0 frees, 8 bytes allocated
+==8454== 
+==8454== 8 bytes in 1 blocks are definitely lost in loss record 1 of 1
+==8454==    at 0x402BE68: malloc (in /usr/lib/valgrind/vgpreload_memcheck-x86-linux.so)
+
+/* leaked memory position */
+
+==8454==    by 0x80484E6: main (memory_init.c:23)
+==8454== 
+==8454== LEAK SUMMARY:
+==8454==    definitely lost: 8 bytes in 1 blocks
+==8454==    indirectly lost: 0 bytes in 0 blocks
+==8454==      possibly lost: 0 bytes in 0 blocks
+==8454==    still reachable: 0 bytes in 0 blocks
+==8454==         suppressed: 0 bytes in 0 blocks
+==8454== 
+==8454== For counts of detected and suppressed errors, rerun with: -v
+==8454== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+==============================
+==============================
