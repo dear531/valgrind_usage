@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define VERSION	"v0.0.1-2"
+#define VERSION	"v0.0.1-3"
 void printf_version(int argc, char *argv[])
 {
 	int t;
@@ -19,11 +19,10 @@ void printf_version(int argc, char *argv[])
 int main(int argc, char *argv[])
 {
 	printf_version(argc, argv);
-
-	int a[2];
-	if (1 == a[0]) {
-		fprintf(stdout, "a[0] is 0\n");
-	}
+	char a[10] = "1234567890";
+	char *p = a + 2;
+#include <string.h>
+	strcpy(a, p);
 
 	return 0;
 }
