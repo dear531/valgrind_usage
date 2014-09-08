@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define VERSION	"v0.0.1-3"
+#define VERSION	"v0.0.2-3"
 void printf_version(int argc, char *argv[])
 {
 	int t;
@@ -19,10 +19,14 @@ void printf_version(int argc, char *argv[])
 int main(int argc, char *argv[])
 {
 	printf_version(argc, argv);
-	char a[10] = "1234567890";
-	char *p = a + 2;
+	char *p;
+#define STRNUM	"1234567890"
+	p = malloc(sizeof(STRNUM));
 #include <string.h>
-	strcpy(a, p);
+	memcpy(p, STRNUM, sizeof(STRNUM));
+#undef STRNUM
+	free(p);
+	p[0] = 0;
 
 	return 0;
 }
