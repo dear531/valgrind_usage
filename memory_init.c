@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define VERSION	"v0.0.1-1"
+#define VERSION	"v0.0.2-0"
 void printf_version(int argc, char *argv[])
 {
 	int t;
@@ -19,12 +19,10 @@ void printf_version(int argc, char *argv[])
 int main(int argc, char *argv[])
 {
 	printf_version(argc, argv);
-
-	int a[1];
-	a[0] = 0;
-	fprintf(stdout, "a[0]:%d\n", a[0]);
-	a[10] = 0;
-	fprintf(stdout, "a[10]:%d\n", a[10]);
+	int *p;
+	p = malloc(sizeof(*p) * 2);
+	p[2]  = 0;
+	free(p);
 
 	return 0;
 }
