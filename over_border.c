@@ -4,16 +4,11 @@
 
 int main(int argc, char *argv[])
 {
-	char *p = malloc(sizeof(*p) * 2);
+	char p[2];
 	int i;
 	for (i = 0; i < 3; i++) {
-		/* Invalid write of size 1 */
-		p[i] = '0' + i; 
-		/* Syscall param write(buf) points to unaddressable byte(s) */
-		write(STDOUT_FILENO, &p[i], sizeof(*(p + i)));
-
-		/* Invalid read of size 1 */
-		fprintf(stdout, "p[%d]:%c\n", p[i]);
+		p[i] = i; 
+		fprintf(stdout, "p[%d]:%d\n", i, p[i]);
 	}
 
 	return 0;
