@@ -747,3 +747,73 @@ memory [9]:
 ==8930== ERROR SUMMARY: 40 errors from 4 contexts (suppressed: 4 from 4)
 
 ==============================
+引用未初始化的整形数据：
+我们可以看到用fprint引用时会多提醒引用的是8字节大小。
+
+  1 #include <stdio.h>
+  2 #include <unistd.h>
+  3 
+  4 int main(int argc, char *argv[])
+  5 {
+  6     int m;
+  7 
+  8     write(STDOUT_FILENO, &m, sizeof(m));
+  9     fprintf(stdout, "m:%d\n", m);
+ 10 
+ 11     return 0;
+ 12 }
+
+
+[root@zhangly valgrind_usage]# gcc -g uninit_memory.c 
+[root@zhangly valgrind_usage]# valgrind ./a.out 
+==16221== Memcheck, a memory error detector
+==16221== Copyright (C) 2002-2009, and GNU GPL'd, by Julian Seward et al.
+==16221== Using Valgrind-3.5.0 and LibVEX; rerun with -h for copyright info
+==16221== Command: ./a.out
+==16221== 
+==16221== Syscall param write(buf) points to uninitialised byte(s)
+==16221==    at 0x4EEE230: __write_nocancel (in /lib64/libc-2.5.so)
+==16221==    by 0x400549: main (uninit_memory.c:8)
+==16221==  Address 0x7ff00089c is on thread 1's stack
+==16221== 
+==16221== Use of uninitialised value of size 8
+==16221==    at 0x4E68B2D: _itoa_word (in /lib64/libc-2.5.so)
+==16221==    by 0x4E6BF12: vfprintf (in /lib64/libc-2.5.so)
+==16221==    by 0x4E73C67: fprintf (in /lib64/libc-2.5.so)
+==16221==    by 0x400562: main (uninit_memory.c:9)
+==16221== 
+==16221== Conditional jump or move depends on uninitialised value(s)
+==16221==    at 0x4E68B37: _itoa_word (in /lib64/libc-2.5.so)
+==16221==    by 0x4E6BF12: vfprintf (in /lib64/libc-2.5.so)
+==16221==    by 0x4E73C67: fprintf (in /lib64/libc-2.5.so)
+==16221==    by 0x400562: main (uninit_memory.c:9)
+==16221== 
+==16221== Conditional jump or move depends on uninitialised value(s)
+==16221==    at 0x4E6BF98: vfprintf (in /lib64/libc-2.5.so)
+==16221==    by 0x4E73C67: fprintf (in /lib64/libc-2.5.so)
+==16221==    by 0x400562: main (uninit_memory.c:9)
+==16221== 
+==16221== Conditional jump or move depends on uninitialised value(s)
+==16221==    at 0x4E6C7A6: vfprintf (in /lib64/libc-2.5.so)
+==16221==    by 0x4E73C67: fprintf (in /lib64/libc-2.5.so)
+==16221==    by 0x400562: main (uninit_memory.c:9)
+==16221== 
+==16221== Conditional jump or move depends on uninitialised value(s)
+==16221==    at 0x4E6A649: vfprintf (in /lib64/libc-2.5.so)
+==16221==    by 0x4E73C67: fprintf (in /lib64/libc-2.5.so)
+==16221==    by 0x400562: main (uninit_memory.c:9)
+==16221== 
+m:0
+==16221== 
+==16221== HEAP SUMMARY:
+==16221==     in use at exit: 0 bytes in 0 blocks
+==16221==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==16221== 
+==16221== All heap blocks were freed -- no leaks are possible
+==16221== 
+==16221== For counts of detected and suppressed errors, rerun with: -v
+==16221== Use --track-origins=yes to see where uninitialised values come from
+==16221== ERROR SUMMARY: 6 errors from 6 contexts (suppressed: 4 from 4)
+
+==============================
+
