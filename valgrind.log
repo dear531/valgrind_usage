@@ -630,3 +630,48 @@ usega "-v" option print:
 ......
 
 ==============================
+2014年 12月 15日 星期一 10:38:02 CST
+==============================
+below example via reference site:
+http://www.ibm.com/developerworks/cn/linux/l-cn-valgrind/index.html
+==============================
+写的内存指向了未初始化的字节(字符串)
+
+  1 #include <stdio.h>
+  2 #include <unistd.h>
+  3 
+  4 int main(int argc, char *argv[])
+  5 {
+  6     char memory[10];
+  7     int i;
+  8     for (i = 0; i < 10; i++) {
+  9         write(STDOUT_FILENO, memory + i, sizeof(*(memory + i)));
+ 10     }
+ 11     return 0;
+ 12 }
+
+[root@zhangly valgrind_usage]# gcc -g uninit_memory.c 
+[root@zhangly valgrind_usage]# valgrind
+valgrind           valgrind-listener  
+[root@zhangly valgrind_usage]# valgrind ./a.out 
+==11793== Memcheck, a memory error detector
+==11793== Copyright (C) 2002-2009, and GNU GPL'd, by Julian Seward et al.
+==11793== Using Valgrind-3.5.0 and LibVEX; rerun with -h for copyright info
+==11793== Command: ./a.out
+==11793== /* 写的内存指向了未初始化的字节 */
+==11793== Syscall param write(buf) points to uninitialised byte(s)
+==11793==    at 0x4EEE230: __write_nocancel (in /lib64/libc-2.5.so)
+==11793==    by 0x4004CA: main (uninit_memory.c:9)
+==11793==  Address 0x7ff000890 is on thread 1's stack
+==11793== 
+�       �==11793== 
+==11793== HEAP SUMMARY:
+==11793==     in use at exit: 0 bytes in 0 blocks
+==11793==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==11793== 
+==11793== All heap blocks were freed -- no leaks are possible
+==11793== 
+==11793== For counts of detected and suppressed errors, rerun with: -v
+==11793== Use --track-origins=yes to see where uninitialised values come from
+==11793== ERROR SUMMARY: 10 errors from 1 contexts (suppressed: 4 from 4)
+
