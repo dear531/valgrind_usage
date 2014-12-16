@@ -23,7 +23,9 @@ Auto-annotation:  on
 --------------------------------------------------------------------------------
        Ir  file:function
 --------------------------------------------------------------------------------
+/* time in a.out, 编译的可执行程序当中的总时间 */
 1,469,180  loop.c:func1 [/home/zhangly/gitstore/valgrind_usage/callgrind/a.out]
+/* below in every share library，以下是在每个共享库当中的时间 */
   524,723  ???:__write_nocancel [/lib64/libc-2.5.so]
   209,882  ???:write [/lib64/libc-2.5.so]
    51,265  ???:_dl_addr [/lib64/libc-2.5.so]
@@ -50,6 +52,7 @@ Auto-annotation:  on
       4  	char str1[10] = "123456789";
       2  	char str2[10] = {0};
       .  	while (1) {
+/* below every single line in 104941x total, 每行均为每次循环相加累计总和时间 */
 314,823  		i++;
 419,764  		write(STDOUT_FILENO, &i, sizeof(i));
 1,469,203  => ???:write (104941x)
