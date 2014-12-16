@@ -1,0 +1,15 @@
+1.run:
+/* --tool=callgrin usega callgrind tools */
+$valgrind --tool=callgrind ./a.out
+
+2.stop program
+/* stty signal ctrl+c */
+$^+c
+
+3.generate report:
+/* set option:--auto=yes */
+$callgrind_annotate --auto=yes callgrind.out.23330 > log.23330.sigint
+
+4.see log
+vim log.23330.sigint
+
