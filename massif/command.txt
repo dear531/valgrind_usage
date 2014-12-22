@@ -1,3 +1,6 @@
+official site refrence:
+http://valgrind.org/docs/manual/ms-manual.html
+
 1.compilte:
 $gcc -g massif.c 
 2.run and output report
@@ -67,3 +70,111 @@ Number of snapshots: 4
   n        time(i)         total(B)   useful-heap(B) extra-heap(B)    stacks(B)
 --------------------------------------------------------------------------------
   3        123,570                0                0             0            0
+==============
+
+
+show detail of stack:
+
+[root@zhangly massif]# valgrind --tool=massif --time-unit=B ./a.out 
+==896== Massif, a heap profiler
+==896== Copyright (C) 2003-2009, and GNU GPL'd, by Nicholas Nethercote
+==896== Using Valgrind-3.5.0 and LibVEX; rerun with -h for copyright info
+==896== Command: ./a.out
+==896== 
+p[0]:0
+p[1]:1
+p[2]:2
+p[3]:3
+p[4]:4
+p[5]:5
+p[6]:6
+p[7]:7
+p[8]:8
+p[9]:9
+==896== 
+[root@zhangly massif]# ls
+a.out  command.txt  massif.c  massif.out.590  massif.out.896
+[root@zhangly massif]# rm massif.out.590 
+rm: remove regular file `massif.out.590'? y
+[root@zhangly massif]# ls
+a.out  command.txt  massif.c  massif.out.896
+[root@zhangly massif]# ms_print massif.out.896 
+--------------------------------------------------------------------------------
+Command:            ./a.out
+Massif arguments:   --time-unit=B
+ms_print arguments: massif.out.896
+--------------------------------------------------------------------------------
+
+
+     B
+  168^                                    #####                               
+     |                                    #                                   
+     |                                    #                                   
+     |                              ::::::#    :::::                          
+     |                              :     #    :                              
+     |                              :     #    :                              
+     |                         ::::::     #    :    :::::                     
+     |                         :    :     #    :    :                         
+     |                         :    :     #    :    :                         
+     |                    ::::::    :     #    :    :    :::::                
+     |                    :    :    :     #    :    :    :                    
+     |                    :    :    :     #    :    :    :                    
+     |               ::::::    :    :     #    :    :    :    :::::           
+     |               :    :    :    :     #    :    :    :    :               
+     |               :    :    :    :     #    :    :    :    :               
+     |          ::::::    :    :    :     #    :    :    :    :    :::::      
+     |          :    :    :    :    :     #    :    :    :    :    :          
+     |          :    :    :    :    :     #    :    :    :    :    :          
+     |     ::::::    :    :    :    :     #    :    :    :    :    :    ::::: 
+     |     :    :    :    :    :    :     #    :    :    :    :    :    :     
+   0 +----------------------------------------------------------------------->B
+     0                                                                     336
+
+Number of snapshots: 16
+ Detailed snapshots: [8 (peak)]
+
+--------------------------------------------------------------------------------
+  n        time(B)         total(B)   useful-heap(B) extra-heap(B)    stacks(B)
+--------------------------------------------------------------------------------
+  0              0                0                0             0            0
+  1             24               24               10            14            0
+  2             48               48               20            28            0
+  3             72               72               30            42            0
+  4             96               96               40            56            0
+  5            120              120               50            70            0
+  6            144              144               60            84            0
+  7            168              168               70            98            0
+  8            168              168               70            98            0
+41.67% (70B) (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+->41.67% (70B) 0x400583: func (massif.c:7)
+  ->35.71% (60B) 0x4005F0: func (massif.c:15)
+  | ->29.76% (50B) 0x4005F0: func (massif.c:15)
+  | | ->23.81% (40B) 0x4005F0: func (massif.c:15)
+  | | | ->17.86% (30B) 0x4005F0: func (massif.c:15)
+  | | | | ->11.90% (20B) 0x4005F0: func (massif.c:15)
+  | | | | | ->05.95% (10B) 0x400619: main (massif.c:23)
+  | | | | | | 
+  | | | | | ->05.95% (10B) 0x4005F0: func (massif.c:15)
+  | | | | |   ->05.95% (10B) 0x400619: main (massif.c:23)
+  | | | | |     
+  | | | | ->05.95% (10B) 0x400619: main (massif.c:23)
+  | | | |   
+  | | | ->05.95% (10B) 0x400619: main (massif.c:23)
+  | | |   
+  | | ->05.95% (10B) 0x400619: main (massif.c:23)
+  | |   
+  | ->05.95% (10B) 0x400619: main (massif.c:23)
+  |   
+  ->05.95% (10B) 0x400619: main (massif.c:23)
+    
+--------------------------------------------------------------------------------
+  n        time(B)         total(B)   useful-heap(B) extra-heap(B)    stacks(B)
+--------------------------------------------------------------------------------
+  9            192              144               60            84            0
+ 10            216              120               50            70            0
+ 11            240               96               40            56            0
+ 12            264               72               30            42            0
+ 13            288               48               20            28            0
+ 14            312               24               10            14            0
+ 15            336                0                0             0            0
+
