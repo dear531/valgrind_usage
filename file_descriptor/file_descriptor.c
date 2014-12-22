@@ -14,6 +14,6 @@ int main(void)
 		fprintf(stderr, "open %s failed\n", file);
 		exit(EXIT_FAILURE);
 	}
-	close(fd);
+	//close(fd);
 	return 0;
 }
